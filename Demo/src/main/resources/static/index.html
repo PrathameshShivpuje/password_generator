@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('background-image.jpg'); /* Replace with your image URL */
+            background-size: cover;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #generateButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #generateButton:hover {
+            background-color: #45a049;
+        }
+
+        #passwordDisplay {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+         #copyButton {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+            display: none; /* Hide the button initially */
+        }
+
+        #copyButton:hover {
+            background-color: #0056b3;
+        }
+                #footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Generator</h1>
+        <p>Click the button below to generate a strong and secure password.</p>
+        
+        <button id="generateButton">Generate Password</button>
+        <p id="passwordDisplay"></p>
+        <button id="copyButton">Copy</button>
+    </div>
+    <div id="footer">
+        Created By
+        Prathamesh Shivpuje
+    </div>
+    <script>
+        const generateButton = document.getElementById("generateButton");
+        const passwordDisplay = document.getElementById("passwordDisplay");
+        const copyButton = document.getElementById("copyButton");
+       
+        generateButton.addEventListener("click", function() {
+            fetch('/generate-password', {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(generatedPassword => {
+                passwordDisplay.textContent = "Generated Password: " +generatedPassword;
+                 copyButton.style.display = "inline-block"; // Show the "Copy" button
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+
+        copyButton.addEventListener("click", function() {
+            const tempInput = document.createElement("textarea");
+            document.body.appendChild(tempInput);
+            tempInput.value = passwordDisplay.textContent.substring(20); // Remove "Generated Password: "
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Provide feedback to the user
+            copyButton.innerText = "Copied!";
+            setTimeout(() => {
+                copyButton.innerText = "Copy";
+            }, 1000);
+        });        
+    </script>
+</body>
+</html>
